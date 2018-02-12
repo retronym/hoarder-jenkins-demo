@@ -1,17 +1,27 @@
 #!/bin/groovy
 
+def setupHoarder = """set org.romanowski.HoarderKeys.globalStashLocation in LocalRootProject := (baseDirectory in LocalRootProject).value / ".hoarder-stash" """
+
 node {
+	def javaHome = tool 'jdk 1.8.0'
 	stage("Build") {
-		sh """
-		/usr/local/bin/sbt -no-colors test:compile 'set org.romanowski.HoarderKeys.globalStashLocation in Global := (baseDirectory in Global).value / ".hoarder-stash"' stash
-		"""
+		checkout scm
+		withEnv(["JAVA_HOME=${javaHome}"]) {
+			sh """
+			/usr/local/bin/sbt -no-colors test:compile '${setupHoarder}' stash
+			"""
+		}
 		stash name: "hoarder-stash", include: ".hoarder-stash/**/*"
 	}
 }
 node {
+	def javaHome = tool 'jdk 1.8.0'
 	stage("Test") {
-		sh """
-		/usr/local/bin/sbt -no-colors 'set org.romanowski.HoarderKeys.globalStashLocation in Global := (baseDirectory in Global).value / ".hoarder-stash"' stashApply p2/test:run
-		"""		
+		checkout scm
+		withEnv(["JAVA_HOME=${javaHome}"]) {
+			sh """
+			/usr/local/bin/sbt -no-colors clean '${setupHoarder}' stashApply p2/test:run
+			"""		
+		}
 	}
 }

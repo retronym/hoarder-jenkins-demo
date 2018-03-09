@@ -13,12 +13,13 @@ node {
 	}
 }
 node {
-    ws dir: /tmp/different-dir
+    ws dir: "/tmp/different-dir"
 	def javaHome = tool 'jdk 1.8.0'
 	stage("Test") {
 		unstash name: "workspace-stash"
 		withEnv(["JAVA_HOME=${javaHome}"]) {
 			sh """
+			pwd
 			/usr/local/bin/sbt -no-colors 'set skip in compile in ThisBuild := true' 'show p2/test:fullClasspath' 'p2/test:runMain Test'
 			"""		
 		}

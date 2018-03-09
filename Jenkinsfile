@@ -13,6 +13,7 @@ node {
 	}
 }
 node {
+    ws dir: /tmp/different-dir
 	def javaHome = tool 'jdk 1.8.0'
 	stage("Test") {
 		unstash name: "workspace-stash"

@@ -1,6 +1,6 @@
 #!/bin/groovy
 
-def setupHoarder = """set org.romanowski.HoarderKeys.globalStashLocation in LocalRootProject := (baseDirectory in LocalRootProject).value / ".hoarder-stash" """
+def setupHoarder = """set org.romanowski.HoarderKeys.globalStashLocation in ThisBuild := (baseDirectory in LocalRootProject).value / ".hoarder-stash" """
 
 node {
 	def javaHome = tool 'jdk 1.8.0'
